@@ -1,18 +1,14 @@
 {
   "builds": [
     {
-      "src": "api.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxLambdaSize": "15mb",
-        "runtime": "python3.9"
-      }
+      "src": "fusion_api/api.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api.py:app"
+      "dest": "fusion_api/api.py:app"
     }
   ]
 }
