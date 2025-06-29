@@ -3,6 +3,11 @@ import requests
 
 app = FastAPI()
 
+@app.get("/")
+def read_root():
+    return {"message": "Bienvenido a la API de Fusión. Usa el endpoint /fusion para predecir."}
+
+
 @app.post("/fusion")
 def fusion(data: dict):
     # Llama al modelo GBoost

@@ -3,6 +3,12 @@ import joblib
 import numpy as np
 
 app = Flask(__name__)
+
+@app.route("/")
+def index():
+    return jsonify({"message": "Bienvenido a la API de GBoost. Usa el endpoint /predict para predecir."})
+
+
 model = joblib.load("best_parkinsons_model.joblib")
 
 @app.route("/predict", methods=["POST"])

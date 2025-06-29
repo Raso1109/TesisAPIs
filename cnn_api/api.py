@@ -9,6 +9,11 @@ model = tf.keras.models.load_model("parkinson_spiral_cnn_82_f1.keras")
 class ImageData(BaseModel):
     image: list
 
+@app.get("/")
+def read_root():
+    return {"message": "Bienvenido a la API de Fusión. Usa el endpoint /fusion para predecir."}
+
+
 @app.post("/predict")
 def predict(data: ImageData):
     image_array = np.array(data.image).reshape((1, 224, 224, 3))  # Ajusta al tamaño esperado por el modelo
