@@ -1,34 +1,40 @@
 from fastapi import FastAPI
 import requests
+import numpy as np
 
 app = FastAPI()
 
 @app.post("/fusion")
 def fusion(data: dict):
-    # Llama al modelo GBoost
+    # Llama a la API del modelo GBoost
     gboost_response = requests.post(
         "https://gboost-api.vercel.app/predict", 
         json={"features": data["features"]}
     ).json()
-    
-    # Llama al modelo CNN
+
+    # Llama a la API del modelo CNN
     cnn_response = requests.post(
         "https://cnn-api.vercel.app/predict", 
-        json={"image": data["image"]}
+        files={"file": data["image"]}
     ).json()
-    
-    # Obtén las predicciones
-    gboost_prediction = gboost_response["prediction"]
-    cnn_prediction = cnn_response["prediction"]
 
-    # Calcula el promedio (averaging)
-    averaged_prediction = [
-        (g + c) / 2 for g, c in zip(gboost_prediction, cnn_prediction)
+    # Obtén las probabilidades de cada API
+    gboost_probabilities = gboost_response["probabilities"]
+    cnn_probabilities = cnn_response["probabilities"]
+
+    # Calcula el promedio de probabilidades
+    averaged_probabilities = [
+        (g + c) / 2 for g, c in zip(gboost_probabilities, cnn_probabilities)
     ]
 
-    return {
-        "gboost_prediction": gboost_prediction,
-        "cnn_prediction": cnn_prediction,
-        "averaged_prediction": averaged_prediction
-    }
+    # Determina la clase final
+    class_idx = int(np.argmax(averaged_probabilities))
+    class_names = ["Healthy", "Parkinson"]
+    final_class = class_names[class_idx]
 
+    return {
+        "gboost_probabilities": gboost_probabilities,
+        "cnn_probabilities": cnn_probabilities,
+        "averaged_probabilities": averaged_probabilities,
+        "final_class": final_class
+    }
