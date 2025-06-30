@@ -8,6 +8,18 @@ from PIL import Image
 import io
 import tensorflow as tf  # Assuming your CNN is a Keras model
 
+def download_model_from_azure():
+    model_url = "https://tesismodelo.blob.core.windows.net/cnnmodelo/parkinson_spiral_cnn_82_f1.keras"
+    model_path = "models/parkinson_spiral_cnn_82_f1.keras"
+    os.makedirs("models", exist_ok=True)
+    if not os.path.exists(model_path):
+        print("⏬ Downloading CNN model from Azure Blob...")
+        r = requests.get(model_url, stream=True)
+        with open(model_path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=8192):
+                f.write(chunk)
+        print("✅ Model download complete.")
+
 app = FastAPI(title="Fused Parkinson Detection API")
 
 gboost_model = None
@@ -15,10 +27,12 @@ cnn_model = None
 
 def load_models():
     global gboost_model, cnn_model
-    if gboost_model is None:
-        gboost_model = joblib.load("models/best_parkinsons_model.joblib")
-    if cnn_model is None:
-        cnn_model = tf.keras.models.load_model("models/parkinson_spiral_cnn_82_f1.keras")
+    with model_lock:
+        if gboost_model is None:
+            gboost_model = joblib.load("models/best_parkinsons_model.joblib")
+        if cnn_model is None:
+            download_model_from_azure()  # 👈 descarga si no existe
+            cnn_model = tf.keras.models.load_model("models/parkinson_spiral_cnn_82_f1.keras")
 
 # List of features expected by the Gradient Boost model
 FEATURE_NAMES = ['Age', 'Gender', 'Ethnicity', 'EducationLevel', 'BMI',
