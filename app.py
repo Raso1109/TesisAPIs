@@ -10,9 +10,15 @@ import tensorflow as tf  # Assuming your CNN is a Keras model
 
 app = FastAPI(title="Fused Parkinson Detection API")
 
-# Load models
-gboost_model = joblib.load("models/best_parkinsons_model.joblib")         # Adjust path
-cnn_model = tf.keras.models.load_model("models/parkinson_spiral_cnn_82_f1.keras") # Adjust path
+gboost_model = None
+cnn_model = None
+
+def load_models():
+    global gboost_model, cnn_model
+    if gboost_model is None:
+        gboost_model = joblib.load("models/best_parkinsons_model.joblib")
+    if cnn_model is None:
+        cnn_model = tf.keras.models.load_model("models/parkinson_spiral_cnn_82_f1.keras")
 
 # List of features expected by the Gradient Boost model
 FEATURE_NAMES = ['Age', 'Gender', 'Ethnicity', 'EducationLevel', 'BMI',
@@ -31,6 +37,7 @@ async def predict(
 ):
     try:
         # Parse form data into ordered array for Gradient Boost
+        load_models()
         input_data = [float(data[feature]) for feature in FEATURE_NAMES]
         df = pd.DataFrame([input_data], columns=FEATURE_NAMES)
         gboost_pred = gboost_model.predict_proba(df)[0][1]
