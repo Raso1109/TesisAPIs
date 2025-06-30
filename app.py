@@ -44,11 +44,8 @@ FEATURE_NAMES = ['Age', 'Gender', 'Ethnicity', 'EducationLevel', 'BMI',
     'PosturalInstability', 'SpeechProblems', 'SleepDisorders', 'Constipation']
 
 @app.post("/predict")
-async def predict(
-    # Structured inputs from form
-    **data: str,
-    image: UploadFile = File(...)
-):
+async def predict(image: UploadFile = File(...), **data: str):
+
     try:
         # Parse form data into ordered array for Gradient Boost
         load_models()
