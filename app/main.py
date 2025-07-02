@@ -28,6 +28,10 @@ def download_model_if_not_exists():
 download_model_if_not_exists()
 cnn_model = tf.keras.models.load_model(CNN_MODEL_PATH)
 
+@app.get("/")
+def read_root():
+    return {"message": "Hello from Azure"}
+
 @app.post("/predict/")
 async def predict(image: UploadFile = File(...), **form_data):
     try:
