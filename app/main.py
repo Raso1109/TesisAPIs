@@ -16,7 +16,7 @@ tabular_model = joblib.load("app/models/best_parkinsons_model.joblib")
 CNN_MODEL_PATH = "cnn_model.keras"
 
 # URL del modelo en Azure Blob Storage (reemplaza con el tuyo)
-CNN_MODEL_URL = os.getenv("CNN_MODEL_URL")  # puedes ponerlo en Azure App Settings
+CNN_MODEL_URL = os.getenv("https://tesismodelo.blob.core.windows.net/cnnmodelo/parkinson_spiral_cnn_82_f1.keras")  # puedes ponerlo en Azure App Settings
 
 def download_model_if_not_exists():
     if not os.path.exists(CNN_MODEL_PATH):
