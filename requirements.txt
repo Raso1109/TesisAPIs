@@ -1,8 +1,8 @@
 fastapi
-uvicorn
-pandas
-numpy
-joblib
+uvicorn[standard]
+gunicorn
 tensorflow
-Pillow
+joblib
+python-multipart
 requests
+
