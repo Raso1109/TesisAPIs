@@ -7,7 +7,8 @@ import os
 import requests
 from app.utils.preprocessing import preprocess_image, preprocess_features
 
-app = FastAPI(title="Parkinson Detection API (Fused)")
+def _init():
+    app = FastAPI(title="Parkinson Detection API (Fused)")
 
 # Cargar modelo tabular
 tabular_model = joblib.load("app/models/best_parkinsons_model.joblib")
