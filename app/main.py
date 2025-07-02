@@ -13,7 +13,7 @@ app = FastAPI(title="Parkinson Detection API (Fused)")
 tabular_model = joblib.load("app/models/best_parkinsons_model.joblib")
 
 # Ruta del modelo CNN descargado
-CNN_MODEL_PATH = "cnn_model.keras"
+CNN_MODEL_PATH = "app/models/cnn_model.keras"
 
 # URL del modelo en Azure Blob Storage (reemplaza con el tuyo)
 CNN_MODEL_URL = os.getenv("https://tesismodelo.blob.core.windows.net/cnnmodelo/parkinson_spiral_cnn_82_f1.keras")  # puedes ponerlo en Azure App Settings
